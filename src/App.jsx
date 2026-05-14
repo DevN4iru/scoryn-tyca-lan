@@ -89,47 +89,53 @@ function SectionTitle({ eyebrow, title, children }) {
   );
 }
 
-// OFFICIAL_CREDITS_FOOTER_PATCH:
-// Official credits footer for the Scoryn TYCA LAN event system.
+// LANDING_GUIDE_FOOTER_PATCH:
+// Official system guide and credits for the Scoryn TYCA LAN event system.
 function CreditsFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="credits-footer">
+    <footer className="credits-footer credits-footer-pro">
       <div className="credits-brand">
         <div className="logo-mark small">S</div>
         <div>
           <div className="eyebrow">Official System Credits</div>
           <h2>Scoryn · Miss TYCA 2026</h2>
           <p>
-            LAN-based pageant tabulation system for faster, cleaner, transparent,
-            and traceable scoring.
+            Built for transparent pageant scoring, locked judge submissions,
+            traceable scoring history, live tabulation, and LAN-ready event operations.
           </p>
         </div>
       </div>
 
-      <div className="credits-grid">
-        <article>
+      <div className="credits-grid credits-grid-pro">
+        <article className="credit-dev-card lead">
           <span className="pill">Lead Developer</span>
           <h3>Kirch Ivan A. Balite</h3>
           <strong>Kirjane Labs</strong>
-          <p>Full-Stack Developer · Linux-first development · local hosting and event systems</p>
+          <p>
+            Full-Stack Developer · Linux-first development · local hosting · event systems ·
+            practical production tooling.
+          </p>
           <ul>
-            <li>Phone: 09486328353</li>
-            <li>Email: kirchbalite.careers@gmail.com</li>
-            <li>Facebook: Kirch Ivan</li>
+            <li><b>Phone:</b> 09486328353</li>
+            <li><b>Email:</b> kirchbalite.careers@gmail.com</li>
+            <li><b>Facebook:</b> Kirch Ivan</li>
           </ul>
         </article>
 
-        <article>
+        <article className="credit-dev-card">
           <span className="pill">Co-Developer</span>
           <h3>Osiris Kedigadash Palac</h3>
           <strong>Dev Siris</strong>
-          <p>Full-Stack Developer · system collaboration and event software support</p>
+          <p>
+            Full-Stack Developer · system collaboration · event software support ·
+            pageant tabulation workflow assistance.
+          </p>
           <ul>
-            <li>Phone: 09694213824</li>
-            <li>Email: palac.osiriskedigadash@gmail.com</li>
-            <li>Facebook: Siris Palac</li>
+            <li><b>Phone:</b> 09694213824</li>
+            <li><b>Email:</b> palac.osiriskedigadash@gmail.com</li>
+            <li><b>Facebook:</b> Siris Palac</li>
           </ul>
         </article>
       </div>
@@ -139,6 +145,63 @@ function CreditsFooter() {
         <span>© {year} Kirch Ivan A. Balite and Osiris Kedigadash Palac. All rights reserved.</span>
       </div>
     </footer>
+  );
+}
+
+function SystemGuidePanel() {
+  return (
+    <aside className="system-guide-panel">
+      <section className="guide-card guide-hero">
+        <div className="eyebrow">Operator Guide</div>
+        <h2>Run the event without guessing.</h2>
+        <p>
+          Scoryn separates developer setup, judge scoring, admin control, and TV display
+          so the event flow stays clean during the actual pageant.
+        </p>
+      </section>
+
+      <section className="guide-card">
+        <div className="eyebrow">Event Flow</div>
+        <div className="guide-steps">
+          <div><span>01</span><strong>Developer prepares setup</strong><small>Candidates, judges, PINs, and criteria.</small></div>
+          <div><span>02</span><strong>Judges score preliminary</strong><small>Scores autosave while typing and lock after submit.</small></div>
+          <div><span>03</span><strong>Admin monitors live ranking</strong><small>Top 3 opens only after all prelim judges submit.</small></div>
+          <div><span>04</span><strong>Final round decides winner</strong><small>Only official Top 3 can receive final scores.</small></div>
+        </div>
+      </section>
+
+      <section className="guide-grid-compact">
+        <article className="guide-card">
+          <div className="eyebrow">Access Roles</div>
+          <ul className="guide-list">
+            <li><b>Judge</b><span>Score sheets only</span></li>
+            <li><b>Admin</b><span>Live tabulation and winner declaration</span></li>
+            <li><b>Developer</b><span>Event builder, reset, setup control</span></li>
+          </ul>
+        </article>
+
+        <article className="guide-card">
+          <div className="eyebrow">Live Operations</div>
+          <ul className="guide-list">
+            <li><b>Autosave</b><span>Judge scores save while typing</span></li>
+            <li><b>Locked submits</b><span>Submitted scores cannot be edited</span></li>
+            <li><b>TV screens</b><span>Top 3 and finals displays are separate</span></li>
+          </ul>
+        </article>
+      </section>
+
+      <section className="guide-card">
+        <div className="eyebrow">Before the Event</div>
+        <div className="checklist-grid">
+          <span>Confirm candidate names and numbers</span>
+          <span>Confirm judge PINs</span>
+          <span>Check criteria totals equal 100%</span>
+          <span>Open admin dashboard</span>
+          <span>Open TV Top 3 display</span>
+          <span>Open TV Finals display</span>
+        </div>
+      </section>
+    </aside>
   );
 }
 
@@ -178,54 +241,58 @@ function Login({ onLogin }) {
   }
 
   return (
-    <main className="page narrow">
-      <section className="hero-card">
-        <div className="eyebrow">LAN Production System</div>
-        <h2>Fast, clean, and reliable pageant tabulation.</h2>
-        <p>
-          Built for Miss TYCA 2026 with controlled judge access, locked submissions,
-          automatic Top 3 finals flow, and live results display for the event floor.
-        </p>
+    <main className="page landing-page">
+      <div className="landing-shell">
+        <section className="hero-card landing-login-card">
+          <div className="eyebrow">LAN Production System</div>
+          <h2>Fast, clean, and reliable pageant tabulation.</h2>
+          <p>
+            Built for Miss TYCA 2026 with controlled judge access, locked submissions,
+            automatic Top 3 finals flow, and live results display for the event floor.
+          </p>
 
-        <div className="hero-highlights">
-          <MiniStat label="Mode" value="LAN Ready" note="Runs locally on event network" />
-          <MiniStat label="Flow" value="Prelim → Top 3 → Final" note="Locked judging lifecycle" />
-          <MiniStat label="Access" value="3 Roles" note="Judge, Admin, Developer" />
-        </div>
+          <div className="hero-highlights">
+            <MiniStat label="Mode" value="LAN Ready" note="Runs locally on event network" />
+            <MiniStat label="Flow" value="Prelim → Top 3 → Final" note="Locked judging lifecycle" />
+            <MiniStat label="Access" value="3 Roles" note="Judge, Admin, Developer" />
+          </div>
 
-        <div className="role-grid">
-          <button type="button" className={role === 'judge' ? 'role active' : 'role'} onClick={() => setRole('judge')}>
-            <strong>Judge</strong>
-            <span>Open Judge Panel</span>
-          </button>
-          <button type="button" className={role === 'admin' ? 'role active' : 'role'} onClick={() => setRole('admin')}>
-            <strong>Admin</strong>
-            <span>Live tabulation only</span>
-          </button>
-          <button type="button" className={role === 'developer' ? 'role active' : 'role'} onClick={() => setRole('developer')}>
-            <strong>Developer</strong>
-            <span>Open Event Builder</span>
-          </button>
-        </div>
+          <div className="role-grid">
+            <button type="button" className={role === 'judge' ? 'role active' : 'role'} onClick={() => setRole('judge')}>
+              <strong>Judge</strong>
+              <span>Open Judge Panel</span>
+            </button>
+            <button type="button" className={role === 'admin' ? 'role active' : 'role'} onClick={() => setRole('admin')}>
+              <strong>Admin</strong>
+              <span>Live tabulation only</span>
+            </button>
+            <button type="button" className={role === 'developer' ? 'role active' : 'role'} onClick={() => setRole('developer')}>
+              <strong>Developer</strong>
+              <span>Open Event Builder</span>
+            </button>
+          </div>
 
-        <div className="role-helper">
-          <span>Judges score only.</span>
-          <span>Admin watches live tabulation.</span>
-          <span>Developer configures the event.</span>
-        </div>
+          <div className="role-helper">
+            <span>Judges score only.</span>
+            <span>Admin watches live tabulation.</span>
+            <span>Developer configures the event.</span>
+          </div>
 
-        <form className="login-form" onSubmit={submit}>
-          <label>{roleLabel}</label>
-          <input value={pin} onChange={(event) => setPin(event.target.value)} autoFocus />
-          <button type="submit">Enter {enterLabel}</button>
-          {error && <p className="error">{error}</p>}
-        </form>
-      </section>
+          <form className="login-form" onSubmit={submit}>
+            <label>{roleLabel}</label>
+            <input value={pin} onChange={(event) => setPin(event.target.value)} autoFocus />
+            <button type="submit">Enter {enterLabel}</button>
+            {error && <p className="error">{error}</p>}
+          </form>
 
-      <section className="info-strip">
-        <strong>Default access</strong>
-        <span>Admin: admin2026 · Developer: dev2026 · Judges: judge1 to judge8</span>
-      </section>
+          <section className="info-strip landing-access-strip">
+            <strong>Default access</strong>
+            <span>Admin: admin2026 · Developer: dev2026 · Judges: judge1 to judge8</span>
+          </section>
+        </section>
+
+        <SystemGuidePanel />
+      </div>
 
       <CreditsFooter />
     </main>

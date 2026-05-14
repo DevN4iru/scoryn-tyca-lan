@@ -1177,3 +1177,194 @@ th {
     align-items: flex-start;
   }
 }
+
+
+/* =========================================================
+   Landing Guide Footer Revision
+   Uses blank landing-page space for system guide, access guide, and operator checklist.
+   ========================================================= */
+
+.landing-page {
+  width: min(1560px, calc(100vw - 2rem));
+}
+
+.landing-shell {
+  display: grid;
+  grid-template-columns: minmax(520px, 0.95fr) minmax(520px, 1.05fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.landing-login-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 37rem;
+}
+
+.landing-access-strip {
+  margin: 1rem 0 0;
+}
+
+.system-guide-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.guide-card {
+  border: 1px solid var(--line);
+  border-radius: 1.35rem;
+  padding: 1.1rem;
+  background:
+    radial-gradient(circle at top right, rgba(242, 214, 117, 0.11), transparent 14rem),
+    rgba(9, 7, 3, 0.88);
+  box-shadow: 0 14px 50px rgba(0, 0, 0, 0.18);
+}
+
+.guide-hero {
+  min-height: 10rem;
+  display: grid;
+  align-content: center;
+}
+
+.guide-card h2,
+.guide-card p {
+  margin: 0;
+}
+
+.guide-card p {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.guide-steps {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+.guide-steps div {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 0.35rem 0.8rem;
+  align-items: start;
+  border: 1px solid var(--line-soft);
+  border-radius: 0.95rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.guide-steps span {
+  grid-row: span 2;
+  display: inline-grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid var(--line);
+  border-radius: 999rem;
+  color: var(--gold);
+  font-weight: 1000;
+}
+
+.guide-steps strong {
+  color: var(--text);
+}
+
+.guide-steps small {
+  color: var(--muted);
+}
+
+.guide-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.guide-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-list li {
+  display: grid;
+  gap: 0.2rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 0.85rem;
+  padding: 0.65rem;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.guide-list b {
+  color: var(--gold);
+}
+
+.guide-list span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.checklist-grid span {
+  border: 1px solid var(--line-soft);
+  border-radius: 999rem;
+  padding: 0.6rem 0.75rem;
+  color: rgba(255, 248, 220, 0.75);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.credits-footer-pro {
+  margin-top: 1rem;
+}
+
+.credits-grid-pro {
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.credit-dev-card.lead {
+  border-color: rgba(242, 214, 117, 0.48);
+  background:
+    radial-gradient(circle at top right, rgba(242, 214, 117, 0.16), transparent 12rem),
+    rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 1180px) {
+  .landing-shell,
+  .guide-grid-compact,
+  .credits-grid-pro {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-login-card {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .landing-page {
+    width: min(100vw - 1rem, 1560px);
+  }
+
+  .checklist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-steps div {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-steps span {
+    grid-row: auto;
+  }
+}
