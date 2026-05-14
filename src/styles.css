@@ -1975,3 +1975,75 @@ th {
     min-height: auto !important;
   }
 }
+
+/* =========================================================
+   Landing Guide Overlap Fix
+   Removes forced vertical stretching from the Event Flow area.
+   Prevents Event Flow cards from colliding with Quick Guide.
+   ========================================================= */
+
+.system-guide-panel {
+  align-content: start !important;
+  align-items: stretch !important;
+  grid-template-rows: auto auto auto !important;
+}
+
+.guide-flow-card {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+.guide-flow-card .guide-steps {
+  height: auto !important;
+  min-height: 0 !important;
+  align-items: stretch !important;
+}
+
+.guide-flow-card .guide-steps div {
+  min-height: 6.25rem !important;
+  height: auto !important;
+  align-content: start !important;
+}
+
+.guide-card {
+  overflow: hidden !important;
+}
+
+.guide-compact-card {
+  margin-top: 0 !important;
+}
+
+.quick-guide-grid {
+  align-items: start !important;
+}
+
+.quick-guide-grid span {
+  height: auto !important;
+  min-height: 2.4rem !important;
+  line-height: 1.25 !important;
+}
+
+@media (min-width: 1181px) {
+  .landing-shell {
+    align-items: start !important;
+  }
+
+  .landing-login-card {
+    min-height: 100% !important;
+  }
+
+  .system-guide-panel {
+    min-height: 0 !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .guide-flow-card .guide-steps {
+    grid-template-columns: 1fr !important;
+  }
+
+  .guide-flow-card .guide-steps div {
+    min-height: auto !important;
+  }
+}
