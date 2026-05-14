@@ -533,6 +533,8 @@ function criterionRawScore(row, criterion) {
   return weighted / (weight / 100);
 }
 
+// CRITERIA_AWARDEES_PATCH:
+// Since only the highest scorer gets the special award, show one awardee per criterion.
 function CriterionLeaders({ eyebrow, title, rows, criteria, emptyText }) {
   const scoredRows = rows.filter((row) => Number(row.judgesSubmitted || 0) > 0);
 
@@ -546,7 +548,7 @@ function CriterionLeaders({ eyebrow, title, rows, criteria, emptyText }) {
       ) : (
         <div className="criteria-leader-grid">
           {criteria.map((criterion) => {
-            const leaders = [...scoredRows]
+            const awardee = [...scoredRows]
               .sort((a, b) => {
                 const byCriterion = criterionWeightedScore(b, criterion) - criterionWeightedScore(a, criterion);
                 if (byCriterion !== 0) return byCriterion;
@@ -555,26 +557,21 @@ function CriterionLeaders({ eyebrow, title, rows, criteria, emptyText }) {
                 if (byTotal !== 0) return byTotal;
 
                 return Number(a.number) - Number(b.number);
-              })
-              .slice(0, 3);
+              })[0];
 
             return (
-              <article className="criteria-leader-card" key={criterion.id}>
+              <article className="criteria-leader-card criteria-awardee-card" key={criterion.id}>
                 <div>
                   <span className="pill">{criterion.weight}%</span>
                   <h3>{criterion.name}</h3>
                 </div>
 
-                <div className="criteria-leader-list">
-                  {leaders.map((candidate, index) => (
-                    <div className="criteria-leader-row" key={candidate.id}>
-                      <span>{index + 1}</span>
-                      <strong>#{candidate.number} {candidate.name}</strong>
-                      <small>
-                        {scoreText(criterionRawScore(candidate, criterion))} raw · {scoreText(criterionWeightedScore(candidate, criterion))} pts
-                      </small>
-                    </div>
-                  ))}
+                <div className="criteria-awardee-row">
+                  <span>Awardee</span>
+                  <strong>#{awardee.number} {awardee.name}</strong>
+                  <small>
+                    {scoreText(criterionRawScore(awardee, criterion))} raw · {scoreText(criterionWeightedScore(awardee, criterion))} pts
+                  </small>
                 </div>
               </article>
             );
@@ -640,11 +637,11 @@ function AdminDashboard({ user, onLogout }) {
       />
 
       <CriterionLeaders
-        eyebrow="Preliminary Criteria Leaders"
-        title="Top Per Criteria"
+        eyebrow="Preliminary Special Awards"
+        title="Criteria Awardees"
         rows={state.prelimResults}
         criteria={state.config.rounds.prelim.criteria}
-        emptyText="Criteria leaders will appear after judges start saving preliminary scores."
+        emptyText="Criteria awardees will appear after judges start saving preliminary scores."
       />
 
 
@@ -655,11 +652,11 @@ function AdminDashboard({ user, onLogout }) {
       </section>
 
       <CriterionLeaders
-        eyebrow="Final Criteria Leaders"
-        title="Top Per Final Criteria"
+        eyebrow="Final Special Awards"
+        title="Final Criteria Awardees"
         rows={state.finalResults}
         criteria={state.config.rounds.final.criteria}
-        emptyText="Final criteria leaders will appear after final scores are saved."
+        emptyText="Final criteria awardees will appear after final scores are saved."
       />
 
       <section className="section-card">

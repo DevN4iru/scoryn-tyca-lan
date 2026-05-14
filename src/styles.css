@@ -1025,3 +1025,48 @@ th {
     text-align: left;
   }
 }
+
+
+/* =========================================================
+   Criteria Awardees Patch
+   Shows only the highest scorer per criterion because only 1st gets the award.
+   ========================================================= */
+
+.criteria-awardee-card {
+  border-color: rgba(242, 214, 117, 0.36);
+}
+
+.criteria-awardee-row {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.95rem;
+  border: 1px solid rgba(242, 214, 117, 0.22);
+  border-radius: 0.95rem;
+  padding: 0.85rem;
+  background:
+    radial-gradient(circle at top right, rgba(242, 214, 117, 0.16), transparent 9rem),
+    rgba(0, 0, 0, 0.18);
+}
+
+.criteria-awardee-row span {
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 999rem;
+  padding: 0.25rem 0.55rem;
+  color: var(--gold);
+  font-size: 0.7rem;
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.criteria-awardee-row strong {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.criteria-awardee-row small {
+  color: var(--gold);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
