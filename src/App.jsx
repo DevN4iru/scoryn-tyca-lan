@@ -107,8 +107,8 @@ function CreditsFooter() {
   return (
     <footer className="site-credit-footer">
       <div className="footer-ribbon">
-        <span>Happy Fiesta from us!</span>
-        <strong>Made for Miss TYCA 2026</strong>
+        <strong>Miss TYCA 2026</strong>
+        <span>Official LAN Tabulation System</span>
         <span>Powered by Scoryn</span>
       </div>
 
@@ -221,6 +221,16 @@ function Login({ onLogin }) {
 
   return (
     <main className="page landing-page">
+      <section className="landing-brand-banner">
+        <EventLogo />
+        <div>
+          <div className="eyebrow">Official Event System</div>
+          <h1>Miss TYCA 2026</h1>
+          <strong>powered by Scoryn</strong>
+          <p>Scoryn online tabulation for pageants, competitions, and judged events</p>
+        </div>
+      </section>
+
       <div className="landing-shell">
         <section className="hero-card landing-login-card">
           <div className="eyebrow">LAN Production System</div>
@@ -1252,12 +1262,7 @@ export default function App() {
   if (tv === 'final') return <TvDisplay type="final" />;
 
   if (!user) {
-    return (
-      <>
-        <Header />
-        <Login onLogin={setUser} />
-      </>
-    );
+    return <Login onLogin={setUser} />;
   }
 
   if (user.role === 'admin') return <AdminDashboard user={user} onLogout={logout} />;

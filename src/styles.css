@@ -1626,3 +1626,192 @@ th {
 .logo-mark {
   overflow: hidden;
 }
+
+
+/* =========================================================
+   COMBINED_LANDING_REAL_LOGO_FIX
+   Real TYCA image logo, aligned landing banner, cleaner cards, cleaned footer ribbon.
+   ========================================================= */
+
+.top-card {
+  position: relative !important;
+  top: auto !important;
+  z-index: 1 !important;
+}
+
+.event-logo {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 36px rgba(242, 214, 117, 0.18);
+}
+
+.event-logo.small {
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 0.85rem;
+}
+
+.event-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Aligned upper landing banner, replacing the uneven separate header. */
+.landing-brand-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: min(100%, 1100px);
+  margin: 0 auto 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 1.15rem;
+  padding: 0.85rem 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(242, 214, 117, 0.1), transparent 13rem),
+    rgba(8, 7, 3, 0.88);
+}
+
+.landing-brand-banner h1,
+.landing-brand-banner p {
+  margin: 0;
+}
+
+.landing-brand-banner h1 {
+  letter-spacing: -0.035em;
+}
+
+.landing-brand-banner strong {
+  display: block;
+  color: var(--gold);
+  margin-top: 0.05rem;
+}
+
+.landing-brand-banner p {
+  color: rgba(255, 248, 220, 0.72);
+}
+
+.landing-page {
+  width: min(1500px, calc(100vw - 2rem));
+}
+
+.landing-shell {
+  grid-template-columns: minmax(500px, 1fr) minmax(500px, 1fr);
+  align-items: stretch;
+}
+
+.landing-login-card,
+.system-guide-panel {
+  min-height: 100%;
+}
+
+.landing-login-card {
+  justify-content: space-between;
+}
+
+.hero-highlights,
+.role-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hero-highlights .mini-stat,
+.role {
+  min-height: 5.4rem;
+}
+
+.system-guide-panel {
+  grid-template-rows: auto 1fr auto;
+}
+
+.guide-card {
+  padding: 1rem;
+  min-height: unset;
+}
+
+.guide-hero {
+  min-height: 7.4rem;
+}
+
+.guide-flow-card .guide-steps {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  height: 100%;
+}
+
+.guide-flow-card .guide-steps div {
+  min-height: 5rem;
+}
+
+.guide-steps div {
+  grid-template-columns: 2.4rem 1fr;
+  padding: 0.65rem;
+}
+
+.guide-steps span {
+  width: 1.9rem;
+  height: 1.9rem;
+  font-size: 0.72rem;
+}
+
+.quick-guide-grid span {
+  min-height: 2.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Clean official footer ribbon. */
+.footer-ribbon {
+  gap: 0.6rem 1rem;
+}
+
+.footer-ribbon span,
+.footer-ribbon strong {
+  white-space: nowrap;
+}
+
+.site-credit-footer {
+  margin-top: 0.9rem;
+}
+
+@media (max-width: 1180px) {
+  .landing-brand-banner,
+  .landing-shell {
+    width: min(100%, 980px);
+  }
+
+  .landing-shell,
+  .guide-flow-card .guide-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .system-guide-panel {
+    grid-template-rows: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .landing-brand-banner {
+    align-items: flex-start;
+    border-radius: 1rem;
+  }
+
+  .hero-highlights,
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-ribbon span,
+  .footer-ribbon strong {
+    white-space: normal;
+  }
+}
