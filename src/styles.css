@@ -525,3 +525,317 @@ th {
     display: grid;
   }
 }
+
+/* =========================================================
+   Scoryn UI Polish Pass 1
+   Visual-only refinement. No scoring, auth, API, or state logic.
+   ========================================================= */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(242, 214, 117, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 214, 117, 0.025) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  opacity: 0.65;
+}
+
+.top-card {
+  position: sticky;
+  top: 1rem;
+  z-index: 20;
+  backdrop-filter: blur(18px);
+}
+
+.logo-mark {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 36px rgba(242, 214, 117, 0.12);
+}
+
+.hero-card,
+.section-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card::before,
+.section-card::before,
+.tv-header::before,
+.tv-card::before,
+.tv-winner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 34%);
+  opacity: 0.8;
+}
+
+.hero-card > *,
+.section-card > *,
+.tv-header > *,
+.tv-card > *,
+.tv-winner > * {
+  position: relative;
+}
+
+.hero-card h2,
+.section-card h2 {
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.role {
+  min-height: 6.2rem;
+  border-color: var(--line-soft);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.role:hover {
+  transform: translateY(-2px);
+  border-color: var(--line);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.24);
+}
+
+.role.active {
+  box-shadow:
+    0 14px 44px rgba(184, 144, 39, 0.18),
+    inset 0 0 0 1px rgba(255, 248, 220, 0.24);
+}
+
+.role strong {
+  font-size: 1.05rem;
+}
+
+.role span {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.role.active span {
+  color: rgba(27, 19, 3, 0.72);
+}
+
+.login-form label {
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+button {
+  min-height: 2.85rem;
+  transition:
+    transform 140ms ease,
+    filter 140ms ease,
+    box-shadow 140ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(242, 214, 117, 0.12);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ghost-button,
+.button-row button {
+  border-color: var(--line-soft);
+  box-shadow: none;
+}
+
+.ghost-button:hover,
+.button-row button:hover {
+  border-color: var(--line);
+}
+
+input {
+  outline: none;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease;
+}
+
+input:focus {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 3px rgba(242, 214, 117, 0.18),
+    0 12px 30px rgba(0, 0, 0, 0.18);
+  background: #fff0c7;
+}
+
+.info-strip {
+  border-color: var(--line-soft);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.progress-card {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+}
+
+.bar {
+  height: 0.55rem;
+}
+
+.bar i {
+  box-shadow: 0 0 18px rgba(242, 214, 117, 0.45);
+}
+
+.candidate-card,
+.leader-card,
+.score-box,
+.builder-block {
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.candidate-card:hover,
+.leader-card:hover,
+.score-box:hover,
+.builder-block:hover {
+  border-color: var(--line);
+  transform: translateY(-1px);
+}
+
+.table-wrap {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+tbody tr {
+  transition: background 140ms ease;
+}
+
+tbody tr:hover {
+  background: rgba(242, 214, 117, 0.055);
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(16, 13, 5, 0.98);
+  backdrop-filter: blur(12px);
+}
+
+.score-total {
+  font-size: 0.95rem;
+}
+
+.leader-card {
+  background:
+    radial-gradient(circle at top right, rgba(242, 214, 117, 0.11), transparent 12rem),
+    linear-gradient(135deg, var(--panel), rgba(10, 8, 3, 0.96));
+}
+
+.leader-card:first-child {
+  border-color: rgba(242, 214, 117, 0.56);
+}
+
+.builder-row {
+  padding: 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 0.9rem;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.builder-row:hover {
+  border-color: var(--line-soft);
+}
+
+.tv-page {
+  width: min(1400px, calc(100vw - 3rem));
+}
+
+.tv-header,
+.tv-card,
+.tv-winner {
+  position: relative;
+  overflow: hidden;
+}
+
+.tv-results {
+  gap: 1.35rem;
+}
+
+.tv-winner {
+  border-color: rgba(242, 214, 117, 0.62);
+  background:
+    radial-gradient(circle at 80% 20%, rgba(242, 214, 117, 0.18), transparent 26rem),
+    linear-gradient(135deg, rgba(32, 23, 7, 0.98), rgba(7, 6, 2, 0.98));
+}
+
+::-webkit-scrollbar {
+  width: 0.72rem;
+  height: 0.72rem;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(242, 214, 117, 0.42);
+  border-radius: 99rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(242, 214, 117, 0.62);
+}
+
+@media (max-width: 720px) {
+  .page,
+  .top-card,
+  .tv-page {
+    width: min(100vw - 1rem, 1220px);
+    margin: 0.65rem auto;
+  }
+
+  .top-card,
+  .hero-card,
+  .section-card,
+  .info-strip,
+  .candidate-card {
+    border-radius: 1rem;
+  }
+
+  .top-card {
+    top: 0.5rem;
+  }
+
+  .logo-mark {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+
+  .hero-card,
+  .section-card,
+  .info-strip {
+    padding: 1rem;
+  }
+
+  .builder-row {
+    padding: 0.7rem;
+  }
+
+  .tv-header,
+  .tv-card,
+  .tv-winner {
+    padding: 1.2rem;
+  }
+}
