@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const TOKEN_KEY = 'scoryn_tyca_token';
 const USER_KEY = 'scoryn_tyca_user';
@@ -689,12 +689,70 @@ function DeveloperDashboard({ user, onLogout }) {
 }
 
 
+// LIVE_SCOREINPUT_PATCH_3:
+// Save while typing with a short debounce, then flush on blur.
+// This makes judge score entry update backend/admin state without waiting for field exit.
 function ScoreInput({ value, disabled, onSave }) {
   const [draft, setDraft] = useState(value ?? '');
+  const saveTimer = useRef(null);
+  const lastSentValue = useRef(String(value ?? ''));
+  const inFlightValue = useRef('');
 
   useEffect(() => {
-    setDraft(value ?? '');
+    const nextValue = value ?? '';
+    setDraft(nextValue);
+    lastSentValue.current = String(nextValue);
   }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) {
+        window.clearTimeout(saveTimer.current);
+      }
+    };
+  }, []);
+
+  async function sendValue(nextValue) {
+    if (disabled) return;
+
+    const normalized = String(nextValue ?? '');
+
+    if (normalized === '' || normalized === lastSentValue.current || normalized === inFlightValue.current) {
+      return;
+    }
+
+    inFlightValue.current = normalized;
+
+    try {
+      await onSave(nextValue);
+      lastSentValue.current = normalized;
+    } finally {
+      inFlightValue.current = '';
+    }
+  }
+
+  function queueSave(nextValue) {
+    if (disabled) return;
+
+    if (saveTimer.current) {
+      window.clearTimeout(saveTimer.current);
+    }
+
+    saveTimer.current = window.setTimeout(() => {
+      sendValue(nextValue);
+    }, 350);
+  }
+
+  function flushSave() {
+    if (disabled) return;
+
+    if (saveTimer.current) {
+      window.clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    }
+
+    sendValue(draft);
+  }
 
   return (
     <input
@@ -704,8 +762,12 @@ function ScoreInput({ value, disabled, onSave }) {
       step="0.01"
       value={draft}
       disabled={disabled}
-      onChange={(event) => setDraft(event.target.value)}
-      onBlur={() => onSave(draft)}
+      onChange={(event) => {
+        const nextValue = event.target.value;
+        setDraft(nextValue);
+        queueSave(nextValue);
+      }}
+      onBlur={flushSave}
       placeholder="0-100"
     />
   );
