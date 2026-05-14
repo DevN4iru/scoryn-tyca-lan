@@ -18,7 +18,12 @@ const HOST = process.env.HOST || '0.0.0.0';
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-const dataDir = path.join(__dirname, '..', 'data');
+// VERCEL_PREVIEW_COMPAT_PATCH:
+    // Vercel preview uses /tmp because serverless filesystems are ephemeral.
+    // Main branch remains LAN/local-first. Do not use Vercel as live-event backend.
+    const dataDir = process.env.VERCEL
+      ? path.join('/tmp', 'scoryn-tyca-lan-data')
+      : path.join(__dirname, '..', 'data');
 const stateFile = path.join(dataDir, 'event-state.json');
 const auditFile = path.join(dataDir, 'audit-log.jsonl');
 
@@ -781,6 +786,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(PORT, HOST, () => {
-  console.log(`Scoryn TYCA LAN API running on http://${HOST}:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, HOST, () => {
+    console.log(`Scoryn TYCA LAN API running on http://${HOST}:${PORT}`);
+  });
+}
+
+export default app;
