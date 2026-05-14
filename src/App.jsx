@@ -518,6 +518,73 @@ function ResultsTable({ rows, criteria, totalLabel = 'Total' }) {
   );
 }
 
+// TOP_PER_CRITERIA_PATCH:
+// UI-only criterion leaderboards derived from existing result breakdowns.
+function criterionWeightedScore(row, criterion) {
+  return Number(row.breakdown?.[criterion.id] || 0);
+}
+
+function criterionRawScore(row, criterion) {
+  const weighted = criterionWeightedScore(row, criterion);
+  const weight = Number(criterion.weight || 0);
+
+  if (!weight) return 0;
+
+  return weighted / (weight / 100);
+}
+
+function CriterionLeaders({ eyebrow, title, rows, criteria, emptyText }) {
+  const scoredRows = rows.filter((row) => Number(row.judgesSubmitted || 0) > 0);
+
+  return (
+    <section className="section-card">
+      <div className="eyebrow">{eyebrow}</div>
+      <h2>{title}</h2>
+
+      {!scoredRows.length ? (
+        <p>{emptyText}</p>
+      ) : (
+        <div className="criteria-leader-grid">
+          {criteria.map((criterion) => {
+            const leaders = [...scoredRows]
+              .sort((a, b) => {
+                const byCriterion = criterionWeightedScore(b, criterion) - criterionWeightedScore(a, criterion);
+                if (byCriterion !== 0) return byCriterion;
+
+                const byTotal = Number(b.total || 0) - Number(a.total || 0);
+                if (byTotal !== 0) return byTotal;
+
+                return Number(a.number) - Number(b.number);
+              })
+              .slice(0, 3);
+
+            return (
+              <article className="criteria-leader-card" key={criterion.id}>
+                <div>
+                  <span className="pill">{criterion.weight}%</span>
+                  <h3>{criterion.name}</h3>
+                </div>
+
+                <div className="criteria-leader-list">
+                  {leaders.map((candidate, index) => (
+                    <div className="criteria-leader-row" key={candidate.id}>
+                      <span>{index + 1}</span>
+                      <strong>#{candidate.number} {candidate.name}</strong>
+                      <small>
+                        {scoreText(criterionRawScore(candidate, criterion))} raw · {scoreText(criterionWeightedScore(candidate, criterion))} pts
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function AdminDashboard({ user, onLogout }) {
   const [state, setState] = useState(null);
   const [message, setMessage] = useState('');
@@ -572,12 +639,28 @@ function AdminDashboard({ user, onLogout }) {
         ]}
       />
 
+      <CriterionLeaders
+        eyebrow="Preliminary Criteria Leaders"
+        title="Top Per Criteria"
+        rows={state.prelimResults}
+        criteria={state.config.rounds.prelim.criteria}
+        emptyText="Criteria leaders will appear after judges start saving preliminary scores."
+      />
+
 
       <section className="section-card">
         <div className="eyebrow">Finals Results</div>
         <h2>{state.status.finalOpen ? 'Final Round Ranking' : 'Waiting for Official Top 3'}</h2>
         <ResultsTable rows={state.finalResults} criteria={state.config.rounds.final.criteria} totalLabel="Final Score" />
       </section>
+
+      <CriterionLeaders
+        eyebrow="Final Criteria Leaders"
+        title="Top Per Final Criteria"
+        rows={state.finalResults}
+        criteria={state.config.rounds.final.criteria}
+        emptyText="Final criteria leaders will appear after final scores are saved."
+      />
 
       <section className="section-card">
         <div className="eyebrow">Official Top 3 Finalists</div>
