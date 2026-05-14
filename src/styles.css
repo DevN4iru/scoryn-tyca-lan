@@ -1815,3 +1815,91 @@ th {
     white-space: normal;
   }
 }
+
+/* =========================================================
+   Landing Alignment Hard Fix
+   Makes banner, main cards, and footer share one exact visual rail.
+   ========================================================= */
+
+.landing-page {
+  width: min(1500px, calc(100vw - 2rem)) !important;
+  margin-inline: auto !important;
+  padding-inline: 0 !important;
+}
+
+.landing-brand-banner,
+.landing-shell,
+.site-credit-footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.landing-brand-banner {
+  margin-top: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+.landing-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 1rem !important;
+  align-items: stretch !important;
+}
+
+.landing-login-card,
+.system-guide-panel {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.system-guide-panel {
+  display: grid !important;
+  grid-template-rows: auto 1fr auto !important;
+  gap: 1rem !important;
+}
+
+.guide-flow-card {
+  height: 100% !important;
+}
+
+.guide-flow-card .guide-steps {
+  height: 100% !important;
+}
+
+.guide-flow-card .guide-steps div {
+  min-height: 5.25rem !important;
+}
+
+.hero-highlights,
+.role-grid {
+  width: 100% !important;
+}
+
+.footer-mainline,
+.footer-devline {
+  width: 100% !important;
+}
+
+@media (max-width: 1180px) {
+  .landing-page {
+    width: min(980px, calc(100vw - 1.25rem)) !important;
+  }
+
+  .landing-brand-banner,
+  .landing-shell {
+    width: 100% !important;
+  }
+
+  .landing-shell {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .landing-page {
+    width: min(100vw - 0.75rem, 980px) !important;
+  }
+}
