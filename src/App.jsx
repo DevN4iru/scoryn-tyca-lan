@@ -49,6 +49,18 @@ function Login({ onLogin }) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
 
+  const roleLabel = role === 'admin'
+    ? 'Admin PIN'
+    : role === 'developer'
+      ? 'Developer PIN'
+      : 'Judge PIN';
+
+  const enterLabel = role === 'admin'
+    ? 'Dashboard'
+    : role === 'developer'
+      ? 'Event Builder'
+      : 'Judge Panel';
+
   async function submit(event) {
     event.preventDefault();
     setError('');
@@ -84,21 +96,25 @@ function Login({ onLogin }) {
           </button>
           <button type="button" className={role === 'admin' ? 'role active' : 'role'} onClick={() => setRole('admin')}>
             <strong>Admin</strong>
-            <span>Open Live Dashboard</span>
+            <span>Live tabulation only</span>
+          </button>
+          <button type="button" className={role === 'developer' ? 'role active' : 'role'} onClick={() => setRole('developer')}>
+            <strong>Developer</strong>
+            <span>Open Event Builder</span>
           </button>
         </div>
 
         <form className="login-form" onSubmit={submit}>
-          <label>{role === 'admin' ? 'Admin PIN' : 'Judge PIN'}</label>
+          <label>{roleLabel}</label>
           <input value={pin} onChange={(event) => setPin(event.target.value)} autoFocus />
-          <button type="submit">Enter {role === 'admin' ? 'Dashboard' : 'Judge Panel'}</button>
+          <button type="submit">Enter {enterLabel}</button>
           {error && <p className="error">{error}</p>}
         </form>
       </section>
 
       <section className="info-strip">
         <strong>Default access</strong>
-        <span>Admin: admin2026 · Judges: judge1 to judge8</span>
+        <span>Admin: admin2026 · Developer: dev2026 · Judges: judge1 to judge8</span>
       </section>
     </main>
   );
@@ -112,7 +128,7 @@ function makeId(prefix) {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
-function AdminSetupManager({ state, onSaved }) {
+function DeveloperBuilder({ state, onSaved }) {
   const [draft, setDraft] = useState(() => cloneConfig(state.config));
   const [message, setMessage] = useState('');
 
@@ -260,7 +276,7 @@ function AdminSetupManager({ state, onSaved }) {
     setMessage('');
 
     try {
-      await api('/api/admin/config', {
+      await api('/api/developer/config', {
         method: 'POST',
         body: JSON.stringify({ config: draft })
       });
@@ -281,7 +297,7 @@ function AdminSetupManager({ state, onSaved }) {
     }
 
     try {
-      await api('/api/admin/reset', {
+      await api('/api/developer/reset', {
         method: 'POST',
         body: JSON.stringify({ phrase })
       });
@@ -296,7 +312,7 @@ function AdminSetupManager({ state, onSaved }) {
   return (
     <section className="section-card">
       <div className="eyebrow">Event Builder</div>
-      <h2>Admin Setup Manager</h2>
+      <h2>Developer Event Builder</h2>
       <p>
         Configure candidates, judges, PINs, and criteria before scoring starts.
         {locked ? ' Setup is currently locked because scoring already started.' : ' Setup is currently editable.'}
@@ -493,7 +509,6 @@ function AdminDashboard({ user, onLogout }) {
         </div>
       </section>
 
-      <AdminSetupManager state={state} onSaved={load} />
 
       <section className="section-card">
         <div className="eyebrow">Finals Results</div>
@@ -545,6 +560,62 @@ function AdminDashboard({ user, onLogout }) {
           </table>
         </div>
       </section>
+    </main>
+  );
+}
+
+
+function DeveloperDashboard({ user, onLogout }) {
+  const [state, setState] = useState(null);
+  const [message, setMessage] = useState('');
+
+  async function load() {
+    const data = await api('/api/developer/state');
+    setState(data);
+  }
+
+  useEffect(() => {
+    load().catch((err) => setMessage(err.message));
+    const timer = setInterval(() => load().catch(() => {}), 2500);
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!state) {
+    return (
+      <main className="page">
+        <Header user={user} onLogout={onLogout} />
+        <section className="section-card">Loading developer event builder...</section>
+      </main>
+    );
+  }
+
+  return (
+    <main className="page">
+      <Header user={user} onLogout={onLogout} />
+
+      <section className="section-card split">
+        <div>
+          <div className="eyebrow">Developer Access</div>
+          <h2>Event Builder</h2>
+          <p>
+            Configure event setup separately from the event admin dashboard.
+            Admin stays focused on live tabulation, judges stay focused on scoring.
+          </p>
+          <p>
+            Preliminary submissions: {state.status.prelimSubmittedCount}/{state.status.totalJudges}.
+            Finals open: {state.status.finalOpen ? 'Yes' : 'No'}.
+          </p>
+          {message && <p className="error">{message}</p>}
+        </div>
+
+        <div className="button-row">
+          <button onClick={load}>Refresh</button>
+          <button onClick={() => window.open('/?tv=top3', '_blank')}>TV Top 3</button>
+          <button onClick={() => window.open('/?tv=final', '_blank')}>TV Finals</button>
+        </div>
+      </section>
+
+      <DeveloperBuilder state={state} onSaved={load} />
     </main>
   );
 }
@@ -860,5 +931,6 @@ export default function App() {
   }
 
   if (user.role === 'admin') return <AdminDashboard user={user} onLogout={logout} />;
+  if (user.role === 'developer') return <DeveloperDashboard user={user} onLogout={logout} />;
   return <JudgePanel user={user} onLogout={logout} />;
 }

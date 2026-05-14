@@ -383,6 +383,21 @@ function buildPublicState(state) {
   };
 }
 
+function buildAdminState(state) {
+  return {
+    ...buildPublicState(state),
+    raw: {
+      prelimSubmitted: state.submissions.prelim,
+      finalSubmitted: state.submissions.final,
+      scoreCount: {
+        prelim: Object.keys(state.scores.prelim || {}).length,
+        final: Object.keys(state.scores.final || {}).length
+      }
+    },
+    history: state.history.slice(-300).reverse()
+  };
+}
+
 function getJudgeOrNull(state, judgeId) {
   return state.config.judges.find((judge) => judge.id === judgeId && judge.enabled !== false) || null;
 }
@@ -450,6 +465,21 @@ app.post('/api/login', (req, res) => {
     });
   }
 
+  if (role === 'developer') {
+    if (pin !== String(process.env.DEVELOPER_PIN || 'dev2026')) {
+      return res.status(401).json({ error: 'Invalid developer PIN' });
+    }
+
+    const user = { role: 'developer', name: 'Developer' };
+    const token = createSession(user);
+    audit('developer_login');
+
+    return res.json({
+      token,
+      ...user
+    });
+  }
+
   if (role === 'judge') {
     const judge = state.config.judges.find((item) => item.pin === pin && item.enabled !== false);
 
@@ -502,23 +532,14 @@ app.get('/api/judge/state', requireRole('judge'), (req, res) => {
 });
 
 app.get('/api/admin/state', requireRole('admin'), (req, res) => {
-  const state = readState();
-
-  res.json({
-    ...buildPublicState(state),
-    raw: {
-      prelimSubmitted: state.submissions.prelim,
-      finalSubmitted: state.submissions.final,
-      scoreCount: {
-        prelim: Object.keys(state.scores.prelim || {}).length,
-        final: Object.keys(state.scores.final || {}).length
-      }
-    },
-    history: state.history.slice(-300).reverse()
-  });
+  res.json(buildAdminState(readState()));
 });
 
-app.post('/api/admin/config', requireRole('admin'), (req, res) => {
+app.get('/api/developer/state', requireRole('developer'), (req, res) => {
+  res.json(buildAdminState(readState()));
+});
+
+app.post('/api/developer/config', requireRole('developer'), (req, res) => {
   const state = readState();
 
   if (scoringStarted(state)) {
@@ -535,7 +556,7 @@ app.post('/api/admin/config', requireRole('admin'), (req, res) => {
   state.config = config;
   writeState(state);
 
-  audit('admin_config_saved', {
+  audit('developer_config_saved', {
     candidates: config.candidates.length,
     judges: config.judges.length,
     prelimCriteria: config.rounds.prelim.criteria.length,
@@ -548,7 +569,7 @@ app.post('/api/admin/config', requireRole('admin'), (req, res) => {
   });
 });
 
-app.post('/api/admin/reset', requireRole('admin'), (req, res) => {
+app.post('/api/developer/reset', requireRole('developer'), (req, res) => {
   if (req.body.phrase !== 'RESET TYCA') {
     return res.status(400).json({ error: 'Reset phrase mismatch.' });
   }
@@ -560,7 +581,7 @@ app.post('/api/admin/reset', requireRole('admin'), (req, res) => {
   state.winner = null;
   writeState(state);
 
-  audit('admin_reset_event');
+  audit('developer_reset_event');
 
   res.json({ ok: true });
 });
@@ -723,8 +744,9 @@ app.get('/api/audit/routes', requireRole('admin'), (req, res) => {
       'POST /api/login',
       'GET /api/judge/state',
       'GET /api/admin/state',
-      'POST /api/admin/config',
-      'POST /api/admin/reset',
+      'GET /api/developer/state',
+      'POST /api/developer/config',
+      'POST /api/developer/reset',
       'POST /api/score/:roundKey',
       'POST /api/submit/:roundKey',
       'POST /api/admin/winner',
