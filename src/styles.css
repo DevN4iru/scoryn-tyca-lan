@@ -1368,3 +1368,222 @@ th {
     grid-row: auto;
   }
 }
+
+
+/* =========================================================
+   Slick Footer Fix Patch
+   Non-sticky header + pageant-judging inspired compact credits footer.
+   ========================================================= */
+
+/* Stop the header from following while scrolling. */
+.top-card {
+  position: relative !important;
+  top: auto !important;
+  z-index: 1 !important;
+}
+
+/* Make the landing guide less bulky and more like an operations side panel. */
+.landing-page {
+  width: min(1500px, calc(100vw - 2rem));
+}
+
+.landing-shell {
+  align-items: start;
+}
+
+.landing-login-card {
+  min-height: unset;
+}
+
+.system-guide-panel {
+  align-content: start;
+}
+
+.guide-card {
+  padding: 1rem;
+}
+
+.guide-hero {
+  min-height: unset;
+}
+
+.guide-flow-card .guide-steps {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guide-steps div {
+  grid-template-columns: 2.4rem 1fr;
+  padding: 0.65rem;
+}
+
+.guide-steps span {
+  width: 1.9rem;
+  height: 1.9rem;
+  font-size: 0.72rem;
+}
+
+.guide-compact-card {
+  padding-bottom: 1rem;
+}
+
+.quick-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+}
+
+.quick-guide-grid span {
+  border: 1px solid var(--line-soft);
+  border-radius: 999rem;
+  padding: 0.5rem 0.65rem;
+  color: rgba(255, 248, 220, 0.72);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.quick-guide-grid b {
+  color: var(--gold);
+}
+
+/* Hide the old card-like footer visuals if earlier footer classes still exist. */
+.credits-footer,
+.credits-footer-pro {
+  box-shadow: none;
+}
+
+/* Real footer: low, wide, clean, and official. */
+.site-credit-footer {
+  width: 100%;
+  margin: 1rem 0 2rem;
+  border-top: 1px solid rgba(242, 214, 117, 0.34);
+  border-bottom: 1px solid rgba(242, 214, 117, 0.2);
+  padding: 0.9rem 0;
+  color: rgba(255, 248, 220, 0.72);
+}
+
+.footer-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem 0.9rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 999rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 0.85rem;
+  padding: 0.45rem 0.85rem;
+  background:
+    linear-gradient(90deg, rgba(242, 214, 117, 0.12), rgba(255, 255, 255, 0.025));
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.footer-ribbon strong {
+  color: var(--gold);
+}
+
+.footer-mainline {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 0.85rem;
+}
+
+.footer-mainline h2,
+.footer-mainline p {
+  margin: 0;
+}
+
+.footer-mainline h2 {
+  color: var(--text);
+  font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+}
+
+.footer-mainline p {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.footer-rights {
+  display: grid;
+  gap: 0.2rem;
+  text-align: right;
+  color: rgba(255, 248, 220, 0.58);
+  font-size: 0.78rem;
+}
+
+.footer-rights strong {
+  color: var(--gold);
+}
+
+.footer-devline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.footer-devline article {
+  border: 1px solid var(--line-soft);
+  border-radius: 0.95rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.footer-devline span {
+  display: block;
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.footer-devline strong {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.footer-devline em {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--gold);
+  font-style: normal;
+  font-weight: 900;
+}
+
+.footer-devline small {
+  display: block;
+  margin-top: 0.45rem;
+  color: rgba(255, 248, 220, 0.58);
+  line-height: 1.45;
+}
+
+@media (max-width: 1180px) {
+  .guide-flow-card .guide-steps,
+  .footer-mainline,
+  .footer-devline {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-rights {
+    text-align: left;
+  }
+}
+
+@media (max-width: 720px) {
+  .quick-guide-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-ribbon {
+    border-radius: 1rem;
+  }
+}

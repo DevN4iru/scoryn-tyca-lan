@@ -89,60 +89,49 @@ function SectionTitle({ eyebrow, title, children }) {
   );
 }
 
-// LANDING_GUIDE_FOOTER_PATCH:
-// Official system guide and credits for the Scoryn TYCA LAN event system.
+// SLICK_FOOTER_FIX_PATCH:
+// Pageant-judging inspired footer: compact, official, slick, and not a giant content card.
 function CreditsFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="credits-footer credits-footer-pro">
-      <div className="credits-brand">
-        <div className="logo-mark small">S</div>
+    <footer className="site-credit-footer">
+      <div className="footer-ribbon">
+        <span>Happy Fiesta from us!</span>
+        <strong>Made for Miss TYCA 2026</strong>
+        <span>Powered by Scoryn</span>
+      </div>
+
+      <div className="footer-mainline">
         <div>
-          <div className="eyebrow">Official System Credits</div>
-          <h2>Scoryn · Miss TYCA 2026</h2>
+          <div className="eyebrow">Project Collaboration</div>
+          <h2>Kirjane Labs × Dev Siris</h2>
           <p>
-            Built for transparent pageant scoring, locked judge submissions,
-            traceable scoring history, live tabulation, and LAN-ready event operations.
+            This LAN-based pageant tabulation system was developed for faster,
+            cleaner, transparent, and traceable scoring.
           </p>
+        </div>
+
+        <div className="footer-rights">
+          <span>© {year} Kirch Ivan A. Balite and Osiris Kedigadash Palac.</span>
+          <strong>All rights reserved.</strong>
         </div>
       </div>
 
-      <div className="credits-grid credits-grid-pro">
-        <article className="credit-dev-card lead">
-          <span className="pill">Lead Developer</span>
-          <h3>Kirch Ivan A. Balite</h3>
-          <strong>Kirjane Labs</strong>
-          <p>
-            Full-Stack Developer · Linux-first development · local hosting · event systems ·
-            practical production tooling.
-          </p>
-          <ul>
-            <li><b>Phone:</b> 09486328353</li>
-            <li><b>Email:</b> kirchbalite.careers@gmail.com</li>
-            <li><b>Facebook:</b> Kirch Ivan</li>
-          </ul>
+      <div className="footer-devline">
+        <article>
+          <span>Lead Developer</span>
+          <strong>Kirch Ivan A. Balite</strong>
+          <em>Kirjane Labs</em>
+          <small>09486328353 · kirchbalite.careers@gmail.com · Facebook: Kirch Ivan</small>
         </article>
 
-        <article className="credit-dev-card">
-          <span className="pill">Co-Developer</span>
-          <h3>Osiris Kedigadash Palac</h3>
-          <strong>Dev Siris</strong>
-          <p>
-            Full-Stack Developer · system collaboration · event software support ·
-            pageant tabulation workflow assistance.
-          </p>
-          <ul>
-            <li><b>Phone:</b> 09694213824</li>
-            <li><b>Email:</b> palac.osiriskedigadash@gmail.com</li>
-            <li><b>Facebook:</b> Siris Palac</li>
-          </ul>
+        <article>
+          <span>Co-Developer</span>
+          <strong>Osiris Kedigadash Palac</strong>
+          <em>Dev Siris</em>
+          <small>09694213824 · palac.osiriskedigadash@gmail.com · Facebook: Siris Palac</small>
         </article>
-      </div>
-
-      <div className="credits-bottom">
-        <span>Developed by Kirjane Labs × Dev Siris.</span>
-        <span>© {year} Kirch Ivan A. Balite and Osiris Kedigadash Palac. All rights reserved.</span>
       </div>
     </footer>
   );
@@ -155,50 +144,30 @@ function SystemGuidePanel() {
         <div className="eyebrow">Operator Guide</div>
         <h2>Run the event without guessing.</h2>
         <p>
-          Scoryn separates developer setup, judge scoring, admin control, and TV display
-          so the event flow stays clean during the actual pageant.
+          Developer setup, judge scoring, admin control, and TV display are separated
+          so the pageant flow stays clean during the actual event.
         </p>
       </section>
 
-      <section className="guide-card">
+      <section className="guide-card guide-flow-card">
         <div className="eyebrow">Event Flow</div>
         <div className="guide-steps">
-          <div><span>01</span><strong>Developer prepares setup</strong><small>Candidates, judges, PINs, and criteria.</small></div>
-          <div><span>02</span><strong>Judges score preliminary</strong><small>Scores autosave while typing and lock after submit.</small></div>
-          <div><span>03</span><strong>Admin monitors live ranking</strong><small>Top 3 opens only after all prelim judges submit.</small></div>
-          <div><span>04</span><strong>Final round decides winner</strong><small>Only official Top 3 can receive final scores.</small></div>
+          <div><span>01</span><strong>Setup</strong><small>Developer prepares candidates, judges, PINs, and criteria.</small></div>
+          <div><span>02</span><strong>Preliminary</strong><small>Judges score and submit locked preliminary sheets.</small></div>
+          <div><span>03</span><strong>Top 3</strong><small>Finals opens only after all prelim judges submit.</small></div>
+          <div><span>04</span><strong>Finals</strong><small>Admin monitors final ranking and declares the winner.</small></div>
         </div>
       </section>
 
-      <section className="guide-grid-compact">
-        <article className="guide-card">
-          <div className="eyebrow">Access Roles</div>
-          <ul className="guide-list">
-            <li><b>Judge</b><span>Score sheets only</span></li>
-            <li><b>Admin</b><span>Live tabulation and winner declaration</span></li>
-            <li><b>Developer</b><span>Event builder, reset, setup control</span></li>
-          </ul>
-        </article>
-
-        <article className="guide-card">
-          <div className="eyebrow">Live Operations</div>
-          <ul className="guide-list">
-            <li><b>Autosave</b><span>Judge scores save while typing</span></li>
-            <li><b>Locked submits</b><span>Submitted scores cannot be edited</span></li>
-            <li><b>TV screens</b><span>Top 3 and finals displays are separate</span></li>
-          </ul>
-        </article>
-      </section>
-
-      <section className="guide-card">
-        <div className="eyebrow">Before the Event</div>
-        <div className="checklist-grid">
-          <span>Confirm candidate names and numbers</span>
-          <span>Confirm judge PINs</span>
-          <span>Check criteria totals equal 100%</span>
-          <span>Open admin dashboard</span>
-          <span>Open TV Top 3 display</span>
-          <span>Open TV Finals display</span>
+      <section className="guide-card guide-compact-card">
+        <div className="eyebrow">Quick Guide</div>
+        <div className="quick-guide-grid">
+          <span><b>Judge</b> Score only</span>
+          <span><b>Admin</b> Live tabulation</span>
+          <span><b>Developer</b> Setup and reset</span>
+          <span><b>TV</b> Public displays</span>
+          <span><b>Lock</b> Submit prevents edits</span>
+          <span><b>Audit</b> Scores are traceable</span>
         </div>
       </section>
     </aside>
