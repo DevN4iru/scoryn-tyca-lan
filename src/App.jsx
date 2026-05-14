@@ -3,8 +3,20 @@ import React, { useEffect, useState } from 'react';
 const TOKEN_KEY = 'scoryn_tyca_token';
 const USER_KEY = 'scoryn_tyca_user';
 
+// SESSION_AUTH_PATCH_1:
+// Keep login only for the current browser tab/session.
+// This stops stale Judge/Admin auto-login when the site is reopened later.
+function authStorage() {
+  return window.sessionStorage;
+}
+
+function clearPersistentAuth() {
+  window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(USER_KEY);
+}
+
 async function api(path, options = {}) {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = authStorage().getItem(TOKEN_KEY);
 
   const res = await fetch(path, {
     ...options,
@@ -104,8 +116,8 @@ function Login({ onLogin }) {
         body: JSON.stringify({ role, pin })
       });
 
-      localStorage.setItem(TOKEN_KEY, data.token);
-      localStorage.setItem(USER_KEY, JSON.stringify(data));
+      authStorage().setItem(TOKEN_KEY, data.token);
+      authStorage().setItem(USER_KEY, JSON.stringify(data));
       onLogin(data);
     } catch (err) {
       setError(err.message);
@@ -965,20 +977,25 @@ function TvDisplay({ type }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    clearPersistentAuth();
+  }, []);
+
   const params = new URLSearchParams(window.location.search);
   const tv = params.get('tv');
 
   const [user, setUser] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(USER_KEY) || 'null');
+      return JSON.parse(authStorage().getItem(USER_KEY) || 'null');
     } catch {
       return null;
     }
   });
 
   function logout() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    authStorage().removeItem(TOKEN_KEY);
+    authStorage().removeItem(USER_KEY);
+    clearPersistentAuth();
     setUser(null);
   }
 
