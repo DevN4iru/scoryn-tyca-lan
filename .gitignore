@@ -7,3 +7,4 @@ data/*.jsonl
 .DS_Store
 *.log
 audits/
+.vercel
