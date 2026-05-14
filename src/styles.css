@@ -946,3 +946,33 @@ th {
     min-height: auto;
   }
 }
+
+
+/* =========================================================
+   Realtime UI Gate Patch
+   Pageant-judging style live polling visibility and readiness notes.
+   ========================================================= */
+
+.live-note {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.5rem !important;
+  border: 1px solid var(--line-soft);
+  border-radius: 999rem;
+  padding: 0.42rem 0.65rem;
+  color: rgba(255, 248, 220, 0.7) !important;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.live-note::before {
+  content: "";
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999rem;
+  background: var(--ok);
+  box-shadow: 0 0 14px rgba(143, 255, 189, 0.55);
+}

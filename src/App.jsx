@@ -29,6 +29,23 @@ function scoreText(value) {
   return Number.isFinite(number) ? number.toFixed(2) : '0.00';
 }
 
+// REALTIME_GATE_PATCH: UI-only live refresh helpers.
+function liveTime() {
+  return new Date().toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+}
+
+function rankLabel(index, row) {
+  if (Number(row?.judgesSubmitted || 0) <= 0) {
+    return index + 1;
+  }
+
+  return index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1;
+}
+
 function Header({ user, onLogout }) {
   return (
     <header className="top-card">
@@ -491,7 +508,7 @@ function ResultsTable({ rows, criteria, totalLabel = 'Total' }) {
             </tr>
           ) : rows.map((row, index) => (
             <tr key={row.id}>
-              <td>{index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}</td>
+              <td>{rankLabel(index, row)}</td>
               <td>#{row.number} {row.name}</td>
               {criteria.map((criterion) => (
                 <td key={criterion.id}>{scoreText(row.breakdown?.[criterion.id])}</td>
@@ -509,15 +526,17 @@ function ResultsTable({ rows, criteria, totalLabel = 'Total' }) {
 function AdminDashboard({ user, onLogout }) {
   const [state, setState] = useState(null);
   const [message, setMessage] = useState('');
+  const [lastUpdated, setLastUpdated] = useState('');
 
   async function load() {
     const data = await api('/api/admin/state');
     setState(data);
+    setLastUpdated(liveTime());
   }
 
   useEffect(() => {
     load().catch((err) => setMessage(err.message));
-    const timer = setInterval(() => load().catch(() => {}), 2500);
+    const timer = setInterval(() => load().catch(() => {}), 3000);
     return () => clearInterval(timer);
   }, []);
 
@@ -525,10 +544,12 @@ function AdminDashboard({ user, onLogout }) {
     return (
       <main className="page">
         <Header user={user} onLogout={onLogout} />
-        <section className="section-card">Loading admin dashboard...</section>
+        <section className="section-card">Loading live admin dashboard...</section>
       </main>
     );
   }
+
+  const officialTop3 = state.status.finalOpen ? state.top3 : [];
 
   return (
     <main className="page">
@@ -539,8 +560,10 @@ function AdminDashboard({ user, onLogout }) {
           <div className="eyebrow">Admin Control</div>
           <h2>Live Tabulation</h2>
           <p>
-            Monitor submissions, rankings, Top 3 finalists, final scores, and official winner status.
+            Auto-refreshes every 3 seconds. Monitor submissions, rankings, Top 3 finalists,
+            final scores, and official winner status.
           </p>
+          <p className="live-note">Last refresh: {lastUpdated || 'starting...'}</p>
           {message && <p className="error">{message}</p>}
         </div>
 
@@ -570,13 +593,13 @@ function AdminDashboard({ user, onLogout }) {
       <section className="section-card">
         <div className="eyebrow">Official Top 3 Finalists</div>
         <div className="leader-grid">
-          {state.top3.length ? state.top3.map((candidate, index) => (
+          {officialTop3.length ? officialTop3.map((candidate, index) => (
             <article key={candidate.id} className="leader-card">
               <span className="pill">Rank {index + 1}</span>
               <h3>#{candidate.number} {candidate.name}</h3>
               <strong>{scoreText(candidate.total)}</strong>
             </article>
-          )) : <p>Top 3 will appear after all preliminary judges submit.</p>}
+          )) : <p>Top 3 is hidden until all preliminary judges submit and finals officially open.</p>}
         </div>
       </section>
 
@@ -619,15 +642,17 @@ function AdminDashboard({ user, onLogout }) {
 function DeveloperDashboard({ user, onLogout }) {
   const [state, setState] = useState(null);
   const [message, setMessage] = useState('');
+  const [lastUpdated, setLastUpdated] = useState('');
 
   async function load() {
     const data = await api('/api/developer/state');
     setState(data);
+    setLastUpdated(liveTime());
   }
 
   useEffect(() => {
     load().catch((err) => setMessage(err.message));
-    const timer = setInterval(() => load().catch(() => {}), 2500);
+    const timer = setInterval(() => load().catch(() => {}), 3000);
     return () => clearInterval(timer);
   }, []);
 
@@ -652,6 +677,7 @@ function DeveloperDashboard({ user, onLogout }) {
             Configure event setup separately from the event admin dashboard.
             Admin stays focused on live tabulation, judges stay focused on scoring.
           </p>
+          <p className="live-note">Last refresh: {lastUpdated || 'starting...'}</p>
           {message && <p className="error">{message}</p>}
         </div>
 
@@ -732,15 +758,17 @@ function ProgressCard({ done, total }) {
 function JudgePanel({ user, onLogout }) {
   const [state, setState] = useState(null);
   const [message, setMessage] = useState('');
+  const [lastUpdated, setLastUpdated] = useState('');
 
   async function load() {
     const data = await api('/api/judge/state');
     setState(data);
+    setLastUpdated(liveTime());
   }
 
   useEffect(() => {
     load().catch((err) => setMessage(err.message));
-    const timer = setInterval(() => load().catch(() => {}), 2500);
+    const timer = setInterval(() => load().catch(() => {}), 3000);
     return () => clearInterval(timer);
   }, []);
 
@@ -814,6 +842,7 @@ function JudgePanel({ user, onLogout }) {
           <div className="eyebrow">Judge Panel</div>
           <h2>{user.name}</h2>
           <p>Input scores from 0 to 100. Scores can be edited until final submit.</p>
+          <p className="live-note">Last refresh: {lastUpdated || 'starting...'}</p>
           {message && (
             <p className={message.toLowerCase().includes('saved') || message.toLowerCase().includes('submitted') ? 'ok' : 'error'}>
               {message}
@@ -924,21 +953,33 @@ function JudgePanel({ user, onLogout }) {
 
 function TvDisplay({ type }) {
   const [state, setState] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState('');
 
   async function load() {
     const data = await api('/api/state');
     setState(data);
+    setLastUpdated(liveTime());
   }
 
   useEffect(() => {
     load().catch(() => {});
-    const timer = setInterval(() => load().catch(() => {}), 2500);
+    const timer = setInterval(() => load().catch(() => {}), 3000);
     return () => clearInterval(timer);
   }, []);
 
   if (!state) return <main className="tv-page">Loading live display...</main>;
 
-  const rows = type === 'final' ? state.finalResults : state.top3;
+  const rows = type === 'final'
+    ? state.finalResults
+    : state.status.finalOpen
+      ? state.top3
+      : [];
+
+  const displayLabel = type === 'final'
+    ? 'Final Winners'
+    : state.status.finalOpen
+      ? 'Official Top 3 Finalists'
+      : 'Waiting for Preliminary Completion';
 
   return (
     <main className="tv-page">
@@ -947,7 +988,7 @@ function TvDisplay({ type }) {
         <div>
           <div className="eyebrow">Official Live Display</div>
           <h1>Miss TYCA 2026</h1>
-          <p>{type === 'final' ? 'Final Winners' : 'Official Top 3 Finalists'}</p>
+          <p>{displayLabel} · Live refresh {lastUpdated || 'starting...'}</p>
         </div>
       </section>
 
@@ -958,7 +999,13 @@ function TvDisplay({ type }) {
             <h2>#{row.number} {row.name}</h2>
             <strong>{scoreText(row.total)}</strong>
           </article>
-        )) : <h2>Waiting for official results...</h2>}
+        )) : (
+          <h2>
+            {type === 'final'
+              ? 'Waiting for final results...'
+              : `Waiting for all preliminary judges. ${state.status.prelimSubmittedCount}/${state.status.totalJudges} submitted.`}
+          </h2>
+        )}
       </section>
     </main>
   );
