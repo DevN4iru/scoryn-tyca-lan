@@ -1587,3 +1587,42 @@ th {
     border-radius: 1rem;
   }
 }
+
+
+/* =========================================================
+   Real TYCA Logo Image Patch
+   Uses public/tyca-logo.jpg instead of text-only logo marks.
+   ========================================================= */
+
+.event-logo {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 36px rgba(242, 214, 117, 0.16);
+}
+
+.event-logo.small {
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 0.85rem;
+}
+
+.event-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Keep old logo-mark support for fallback/other small UI cases. */
+.logo-mark {
+  overflow: hidden;
+}

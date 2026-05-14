@@ -41,10 +41,20 @@ function scoreText(value) {
   return Number.isFinite(number) ? number.toFixed(2) : '0.00';
 }
 
+// REAL_TYCA_LOGO_IMAGE_PATCH:
+// Uses the actual Miss TYCA 2026 logo image from public/tyca-logo.jpg.
+function EventLogo({ size = 'normal' }) {
+  return (
+    <div className={`event-logo ${size}`}>
+      <img src="/tyca-logo.jpg" alt="Miss TYCA 2026 logo" />
+    </div>
+  );
+}
+
 function Header({ user, onLogout }) {
   return (
     <header className="top-card">
-      <div className="logo-mark">TYCA</div>
+      <EventLogo />
       <div>
         <div className="eyebrow">Official Event System</div>
         <h1>Miss TYCA 2026</h1>
@@ -1194,7 +1204,7 @@ function TvDisplay({ type }) {
   return (
     <main className="tv-page">
       <section className="tv-header">
-        <div className="logo-mark">TYCA</div>
+        <EventLogo />
         <div>
           <div className="eyebrow">Official Live Display</div>
           <h1>Miss TYCA 2026</h1>
