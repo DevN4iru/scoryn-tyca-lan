@@ -1070,3 +1070,110 @@ th {
   font-size: 0.82rem;
   font-weight: 900;
 }
+
+
+/* =========================================================
+   Official Credits Footer Patch
+   Lead Developer / Co-Developer credits and rights statement.
+   ========================================================= */
+
+.credits-footer {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.4rem;
+  margin: 1rem 0 2rem;
+  padding: 1.1rem;
+  background:
+    radial-gradient(circle at top left, rgba(242, 214, 117, 0.13), transparent 18rem),
+    radial-gradient(circle at bottom right, rgba(242, 214, 117, 0.08), transparent 16rem),
+    rgba(8, 7, 3, 0.92);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
+}
+
+.credits-brand {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 1rem;
+}
+
+.logo-mark.small {
+  width: 3.1rem;
+  height: 3.1rem;
+  font-size: 1rem;
+}
+
+.credits-brand h2,
+.credits-brand p {
+  margin: 0;
+}
+
+.credits-brand p {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.credits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.credits-grid article {
+  border: 1px solid var(--line-soft);
+  border-radius: 1.1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.credits-grid h3 {
+  margin: 0.7rem 0 0.15rem;
+  color: var(--text);
+  font-size: 1.15rem;
+}
+
+.credits-grid strong {
+  color: var(--gold);
+}
+
+.credits-grid p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.credits-grid ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: rgba(255, 248, 220, 0.72);
+  font-size: 0.86rem;
+}
+
+.credits-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.55rem;
+  border-top: 1px solid var(--line-soft);
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  color: rgba(255, 248, 220, 0.58);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .credits-brand,
+  .credits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .credits-brand {
+    align-items: flex-start;
+  }
+}

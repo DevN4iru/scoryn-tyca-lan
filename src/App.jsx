@@ -89,6 +89,59 @@ function SectionTitle({ eyebrow, title, children }) {
   );
 }
 
+// OFFICIAL_CREDITS_FOOTER_PATCH:
+// Official credits footer for the Scoryn TYCA LAN event system.
+function CreditsFooter() {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer className="credits-footer">
+      <div className="credits-brand">
+        <div className="logo-mark small">S</div>
+        <div>
+          <div className="eyebrow">Official System Credits</div>
+          <h2>Scoryn · Miss TYCA 2026</h2>
+          <p>
+            LAN-based pageant tabulation system for faster, cleaner, transparent,
+            and traceable scoring.
+          </p>
+        </div>
+      </div>
+
+      <div className="credits-grid">
+        <article>
+          <span className="pill">Lead Developer</span>
+          <h3>Kirch Ivan A. Balite</h3>
+          <strong>Kirjane Labs</strong>
+          <p>Full-Stack Developer · Linux-first development · local hosting and event systems</p>
+          <ul>
+            <li>Phone: 09486328353</li>
+            <li>Email: kirchbalite.careers@gmail.com</li>
+            <li>Facebook: Kirch Ivan</li>
+          </ul>
+        </article>
+
+        <article>
+          <span className="pill">Co-Developer</span>
+          <h3>Osiris Kedigadash Palac</h3>
+          <strong>Dev Siris</strong>
+          <p>Full-Stack Developer · system collaboration and event software support</p>
+          <ul>
+            <li>Phone: 09694213824</li>
+            <li>Email: palac.osiriskedigadash@gmail.com</li>
+            <li>Facebook: Siris Palac</li>
+          </ul>
+        </article>
+      </div>
+
+      <div className="credits-bottom">
+        <span>Developed by Kirjane Labs × Dev Siris.</span>
+        <span>© {year} Kirch Ivan A. Balite and Osiris Kedigadash Palac. All rights reserved.</span>
+      </div>
+    </footer>
+  );
+}
+
 function Login({ onLogin }) {
   const [role, setRole] = useState('judge');
   const [pin, setPin] = useState('');
@@ -173,6 +226,8 @@ function Login({ onLogin }) {
         <strong>Default access</strong>
         <span>Admin: admin2026 · Developer: dev2026 · Judges: judge1 to judge8</span>
       </section>
+
+      <CreditsFooter />
     </main>
   );
 }
@@ -703,6 +758,8 @@ function AdminDashboard({ user, onLogout }) {
           </table>
         </div>
       </section>
+
+      <CreditsFooter />
     </main>
   );
 }
@@ -764,6 +821,8 @@ function DeveloperDashboard({ user, onLogout }) {
       />
 
       <DeveloperBuilder state={state} onSaved={load} />
+
+      <CreditsFooter />
     </main>
   );
 }
@@ -1072,6 +1131,8 @@ function JudgePanel({ user, onLogout }) {
           ))}
         </section>
       )}
+
+      <CreditsFooter />
     </main>
   );
 }
