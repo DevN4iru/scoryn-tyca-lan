@@ -976,3 +976,32 @@ th {
   background: var(--ok);
   box-shadow: 0 0 14px rgba(143, 255, 189, 0.55);
 }
+
+
+/* =========================================================
+   Live Autosave Session Auth Patch
+   Makes score entry feel real-time and prevents stale persistent judge sessions.
+   ========================================================= */
+
+.score-box input:not(:disabled) {
+  border-color: rgba(242, 214, 117, 0.58);
+}
+
+.score-box input:not(:disabled):focus {
+  box-shadow:
+    0 0 0 3px rgba(143, 255, 189, 0.14),
+    0 0 22px rgba(242, 214, 117, 0.16);
+}
+
+.live-note {
+  animation: livePulse 1.4s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    opacity: 0.82;
+  }
+  50% {
+    opacity: 1;
+  }
+}

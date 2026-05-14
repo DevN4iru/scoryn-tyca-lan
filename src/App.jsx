@@ -1,10 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const TOKEN_KEY = 'scoryn_tyca_token';
 const USER_KEY = 'scoryn_tyca_user';
 
+// LIVE_AUTOSAVE_SESSION_AUTH_PATCH:
+// Use sessionStorage so a new browser session always lands on role selection.
+// Also clear old localStorage auth so stale Judge 1 sessions stop auto-opening.
+function authStore() {
+  return window.sessionStorage;
+}
+
+function clearLegacyAuth() {
+  window.authStore().removeItem(TOKEN_KEY);
+  window.authStore().removeItem(USER_KEY);
+}
+
 async function api(path, options = {}) {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = authStore().getItem(TOKEN_KEY);
 
   const res = await fetch(path, {
     ...options,
@@ -121,8 +133,8 @@ function Login({ onLogin }) {
         body: JSON.stringify({ role, pin })
       });
 
-      localStorage.setItem(TOKEN_KEY, data.token);
-      localStorage.setItem(USER_KEY, JSON.stringify(data));
+      authStore().setItem(TOKEN_KEY, data.token);
+      authStore().setItem(USER_KEY, JSON.stringify(data));
       onLogin(data);
     } catch (err) {
       setError(err.message);
@@ -536,7 +548,7 @@ function AdminDashboard({ user, onLogout }) {
 
   useEffect(() => {
     load().catch((err) => setMessage(err.message));
-    const timer = setInterval(() => load().catch(() => {}), 3000);
+    const timer = setInterval(() => load().catch(() => {}), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -560,7 +572,7 @@ function AdminDashboard({ user, onLogout }) {
           <div className="eyebrow">Admin Control</div>
           <h2>Live Tabulation</h2>
           <p>
-            Auto-refreshes every 3 seconds. Monitor submissions, rankings, Top 3 finalists,
+            Auto-refreshes every second. Monitor submissions, rankings, Top 3 finalists,
             final scores, and official winner status.
           </p>
           <p className="live-note">Last refresh: {lastUpdated || 'starting...'}</p>
@@ -652,7 +664,7 @@ function DeveloperDashboard({ user, onLogout }) {
 
   useEffect(() => {
     load().catch((err) => setMessage(err.message));
-    const timer = setInterval(() => load().catch(() => {}), 3000);
+    const timer = setInterval(() => load().catch(() => {}), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -705,10 +717,42 @@ function DeveloperDashboard({ user, onLogout }) {
 
 function ScoreInput({ value, disabled, onSave }) {
   const [draft, setDraft] = useState(value ?? '');
+  const saveTimer = useRef(null);
 
   useEffect(() => {
     setDraft(value ?? '');
   }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) {
+        window.clearTimeout(saveTimer.current);
+      }
+    };
+  }, []);
+
+  function queueSave(nextValue) {
+    if (disabled) return;
+
+    if (saveTimer.current) {
+      window.clearTimeout(saveTimer.current);
+    }
+
+    saveTimer.current = window.setTimeout(() => {
+      onSave(nextValue);
+    }, 250);
+  }
+
+  function flushSave() {
+    if (disabled) return;
+
+    if (saveTimer.current) {
+      window.clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    }
+
+    onSave(draft);
+  }
 
   return (
     <input
@@ -718,8 +762,12 @@ function ScoreInput({ value, disabled, onSave }) {
       step="0.01"
       value={draft}
       disabled={disabled}
-      onChange={(event) => setDraft(event.target.value)}
-      onBlur={() => onSave(draft)}
+      onChange={(event) => {
+        const nextValue = event.target.value;
+        setDraft(nextValue);
+        queueSave(nextValue);
+      }}
+      onBlur={flushSave}
       placeholder="0-100"
     />
   );
@@ -768,7 +816,7 @@ function JudgePanel({ user, onLogout }) {
 
   useEffect(() => {
     load().catch((err) => setMessage(err.message));
-    const timer = setInterval(() => load().catch(() => {}), 3000);
+    const timer = setInterval(() => load().catch(() => {}), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -963,7 +1011,7 @@ function TvDisplay({ type }) {
 
   useEffect(() => {
     load().catch(() => {});
-    const timer = setInterval(() => load().catch(() => {}), 3000);
+    const timer = setInterval(() => load().catch(() => {}), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -1012,20 +1060,25 @@ function TvDisplay({ type }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    clearLegacyAuth();
+  }, []);
+
   const params = new URLSearchParams(window.location.search);
   const tv = params.get('tv');
 
   const [user, setUser] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(USER_KEY) || 'null');
+      return JSON.parse(authStore().getItem(USER_KEY) || 'null');
     } catch {
       return null;
     }
   });
 
   function logout() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    authStore().removeItem(TOKEN_KEY);
+    authStore().removeItem(USER_KEY);
+    clearLegacyAuth();
     setUser(null);
   }
 
