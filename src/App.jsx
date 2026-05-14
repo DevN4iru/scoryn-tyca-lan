@@ -44,6 +44,39 @@ function Header({ user, onLogout }) {
   );
 }
 
+// UI_POLISH_PASS_2: frontend-only layout helpers.
+function MiniStat({ label, value, note }) {
+  return (
+    <article className="mini-stat">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      {note && <small>{note}</small>}
+    </article>
+  );
+}
+
+function StatusGrid({ items }) {
+  return (
+    <div className="status-grid">
+      {items.map((item) => (
+        <MiniStat key={item.label} label={item.label} value={item.value} note={item.note} />
+      ))}
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, children }) {
+  return (
+    <div className="section-title">
+      <div>
+        <div className="eyebrow">{eyebrow}</div>
+        <h2>{title}</h2>
+      </div>
+      {children && <p>{children}</p>}
+    </div>
+  );
+}
+
 function Login({ onLogin }) {
   const [role, setRole] = useState('judge');
   const [pin, setPin] = useState('');
@@ -85,9 +118,15 @@ function Login({ onLogin }) {
         <div className="eyebrow">LAN Production System</div>
         <h2>Fast, clean, and reliable pageant tabulation.</h2>
         <p>
-          Built for Miss TYCA 2026 with 8 judges, 12 candidates, custom criteria,
-          locked submissions, Top 3 finals flow, and live display.
+          Built for Miss TYCA 2026 with controlled judge access, locked submissions,
+          automatic Top 3 finals flow, and live results display for the event floor.
         </p>
+
+        <div className="hero-highlights">
+          <MiniStat label="Mode" value="LAN Ready" note="Runs locally on event network" />
+          <MiniStat label="Flow" value="Prelim → Top 3 → Final" note="Locked judging lifecycle" />
+          <MiniStat label="Access" value="3 Roles" note="Judge, Admin, Developer" />
+        </div>
 
         <div className="role-grid">
           <button type="button" className={role === 'judge' ? 'role active' : 'role'} onClick={() => setRole('judge')}>
@@ -102,6 +141,12 @@ function Login({ onLogin }) {
             <strong>Developer</strong>
             <span>Open Event Builder</span>
           </button>
+        </div>
+
+        <div className="role-helper">
+          <span>Judges score only.</span>
+          <span>Admin watches live tabulation.</span>
+          <span>Developer configures the event.</span>
         </div>
 
         <form className="login-form" onSubmit={submit}>
@@ -311,12 +356,10 @@ function DeveloperBuilder({ state, onSaved }) {
 
   return (
     <section className="section-card">
-      <div className="eyebrow">Event Builder</div>
-      <h2>Developer Event Builder</h2>
-      <p>
-        Configure candidates, judges, PINs, and criteria before scoring starts.
-        {locked ? ' Setup is currently locked because scoring already started.' : ' Setup is currently editable.'}
-      </p>
+      <SectionTitle eyebrow="Developer Workspace" title="Event Builder">
+        Configure candidates, judge PINs, and scoring criteria before scoring starts.
+        {locked ? ' Setup is locked because scoring already started.' : ' Setup is editable and ready for event preparation.'}
+      </SectionTitle>
 
       {message && (
         <p className={message.toLowerCase().includes('saved') || message.toLowerCase().includes('reset') ? 'ok' : 'error'}>
@@ -496,8 +539,7 @@ function AdminDashboard({ user, onLogout }) {
           <div className="eyebrow">Admin Control</div>
           <h2>Live Tabulation</h2>
           <p>
-            Preliminary submissions: {state.status.prelimSubmittedCount}/{state.status.totalJudges}.
-            Finals open: {state.status.finalOpen ? 'Yes' : 'No'}.
+            Monitor submissions, rankings, Top 3 finalists, final scores, and official winner status.
           </p>
           {message && <p className="error">{message}</p>}
         </div>
@@ -508,6 +550,15 @@ function AdminDashboard({ user, onLogout }) {
           <button onClick={() => window.open('/?tv=final', '_blank')}>TV Finals</button>
         </div>
       </section>
+
+      <StatusGrid
+        items={[
+          { label: 'Preliminary', value: `${state.status.prelimSubmittedCount}/${state.status.totalJudges}`, note: 'Judge submissions' },
+          { label: 'Finals', value: state.status.finalOpen ? 'Open' : 'Locked', note: 'Top 3 gate' },
+          { label: 'Final Submitted', value: `${state.status.finalSubmittedCount}/${state.status.totalJudges}`, note: 'Final judge locks' },
+          { label: 'Winner', value: state.winner?.name || 'Pending', note: state.winner ? 'Declared' : 'Not yet declared' }
+        ]}
+      />
 
 
       <section className="section-card">
@@ -601,10 +652,6 @@ function DeveloperDashboard({ user, onLogout }) {
             Configure event setup separately from the event admin dashboard.
             Admin stays focused on live tabulation, judges stay focused on scoring.
           </p>
-          <p>
-            Preliminary submissions: {state.status.prelimSubmittedCount}/{state.status.totalJudges}.
-            Finals open: {state.status.finalOpen ? 'Yes' : 'No'}.
-          </p>
           {message && <p className="error">{message}</p>}
         </div>
 
@@ -614,6 +661,15 @@ function DeveloperDashboard({ user, onLogout }) {
           <button onClick={() => window.open('/?tv=final', '_blank')}>TV Finals</button>
         </div>
       </section>
+
+      <StatusGrid
+        items={[
+          { label: 'Candidates', value: state.config.candidates.length, note: 'Configured entries' },
+          { label: 'Judges', value: state.config.judges.length, note: 'Configured accounts' },
+          { label: 'Scoring', value: state.status.scoringStarted ? 'Started' : 'Not Started', note: state.status.scoringStarted ? 'Setup locked' : 'Setup editable' },
+          { label: 'Finals', value: state.status.finalOpen ? 'Open' : 'Locked', note: `${state.status.prelimSubmittedCount}/${state.status.totalJudges} prelim submitted` }
+        ]}
+      />
 
       <DeveloperBuilder state={state} onSaved={load} />
     </main>
@@ -772,6 +828,15 @@ function JudgePanel({ user, onLogout }) {
         </button>
       </section>
 
+      <StatusGrid
+        items={[
+          { label: 'Preliminary', value: prelimLocked ? 'Locked' : `${prelimDone}/${prelimTotal}`, note: prelimLocked ? 'Submitted' : 'Fields filled' },
+          { label: 'Finals', value: state.status.finalOpen ? 'Open' : 'Locked', note: `${state.status.prelimSubmittedCount}/${state.status.totalJudges} prelim submitted` },
+          { label: 'Final Sheet', value: state.status.finalOpen ? `${finalDone}/${finalTotal}` : 'Waiting', note: state.status.finalOpen ? 'Top 3 only' : 'Opens after prelim' },
+          { label: 'Your Final', value: finalLocked ? 'Locked' : 'Editable', note: state.status.finalOpen ? 'Final round status' : 'Not available yet' }
+        ]}
+      />
+
       <section className="section-card">
         <div className="eyebrow">{state.config.rounds.prelim.name}</div>
         <h2>Preliminary Score Sheet</h2>
@@ -857,8 +922,7 @@ function JudgePanel({ user, onLogout }) {
   );
 }
 
-function TvDisplay
-({ type }) {
+function TvDisplay({ type }) {
   const [state, setState] = useState(null);
 
   async function load() {

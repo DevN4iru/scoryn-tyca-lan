@@ -839,3 +839,110 @@ th {
     padding: 1.2rem;
   }
 }
+
+
+/* =========================================================
+   Scoryn UI Polish Pass 2
+   Frontend-only layout clarity for login, admin, developer, judge.
+   ========================================================= */
+
+.hero-highlights,
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.status-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mini-stat {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background:
+    radial-gradient(circle at top right, rgba(242, 214, 117, 0.1), transparent 8rem),
+    rgba(255, 255, 255, 0.035);
+  border-radius: 1.05rem;
+  padding: 0.9rem;
+}
+
+.mini-stat span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.mini-stat strong {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--gold);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  line-height: 1.05;
+}
+
+.mini-stat small {
+  display: block;
+  margin-top: 0.4rem;
+  color: rgba(255, 248, 220, 0.62);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.role-helper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: -0.25rem 0 1rem;
+}
+
+.role-helper span {
+  border: 1px solid var(--line-soft);
+  border-radius: 999rem;
+  padding: 0.55rem 0.65rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.section-title {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.section-title h2,
+.section-title p {
+  margin: 0;
+}
+
+.section-title p {
+  color: var(--muted);
+}
+
+.status-grid + .section-card {
+  margin-top: 1rem;
+}
+
+.status-grid .mini-stat {
+  min-height: 6.7rem;
+}
+
+@media (max-width: 980px) {
+  .hero-highlights,
+  .status-grid,
+  .role-helper {
+    grid-template-columns: 1fr;
+  }
+
+  .status-grid .mini-stat {
+    min-height: auto;
+  }
+}
