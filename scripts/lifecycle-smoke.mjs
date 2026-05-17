@@ -260,7 +260,7 @@ function expectedTop3(config) {
 }
 
 function finalRawScore(candidateNumber) {
-  return 35 + Number(candidateNumber) * 5;
+  return 70 + Number(candidateNumber);
 }
 
 async function fillPrelimScores(judgeToken, config) {
@@ -356,11 +356,11 @@ async function main() {
   const prelimCriteria = config.rounds.prelim.criteria;
   const finalCriteria = config.rounds.final.criteria;
 
-  assert(candidates.length === 12, `expected 12 active candidates, got ${candidates.length}`);
+  assert(candidates.length === 16, `expected 16 active candidates, got ${candidates.length}`);
   assert(judges.length === 8, `expected 8 enabled judges, got ${judges.length}`);
   assert(nearlyEqual(criteriaWeightTotal(prelimCriteria), 100), 'prelim criteria total is not 100%');
   assert(nearlyEqual(criteriaWeightTotal(finalCriteria), 100), 'final criteria total is not 100%');
-  ok('Default config has 12 candidates, 8 judges, prelim 100%, final 100%');
+  ok('Default config has 16 candidates, 8 judges, prelim 100%, final 100%');
 
   log('6. INVALID SETUP CRITERIA TOTAL REJECTED');
   const invalidWeightConfig = clone(config);
@@ -411,14 +411,15 @@ async function main() {
   assert(String(incomplete.error || '').toLowerCase().includes('incomplete'), 'incomplete submit error missing');
   ok('Incomplete prelim submit returns 400');
 
-  log('10. FILL ALL 60 PRELIM SCORES FOR JUDGE1, SUBMIT JUDGE1');
-  assert(candidates.length * prelimCriteria.length === 60, 'judge1 prelim required field count is not 60');
+  log('10. FILL ALL PRELIM SCORES FOR JUDGE1, SUBMIT JUDGE1');
+  const expectedJudge1PrelimFields = candidates.length * prelimCriteria.length;
+  assert(expectedJudge1PrelimFields === 80, `judge1 prelim required field count expected 80, got ${expectedJudge1PrelimFields}`);
   await fillPrelimScores(judge1.token, config);
   await expectStatus('POST', '/api/submit/prelim', 200, {
     token: judge1.token,
     body: {}
   });
-  ok('Judge1 filled 60 prelim scores and submitted');
+  ok('Judge1 filled 80 prelim scores and submitted');
 
   log('11. EDITING JUDGE1 PRELIM AFTER SUBMIT RETURNS LOCKED ERROR');
   const lockedEdit = await expectStatus('POST', '/api/score/prelim', 423, {

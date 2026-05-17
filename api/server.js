@@ -39,7 +39,7 @@ function defaultConfig() {
     eventName: 'Miss TYCA 2026',
     systemName: 'Scoryn',
     subtitle: 'Official LAN tabulation system',
-    candidates: Array.from({ length: 12 }, (_, index) => ({
+    candidates: Array.from({ length: 16 }, (_, index) => ({
       id: safeId('candidate', index + 1),
       number: index + 1,
       name: `Candidate ${index + 1}`,
