@@ -1,6 +1,7 @@
 /**
  * Default SaaS Configuration
- * All customizable settings with safe defaults
+ * All customizable settings with safe defaults.
+ * Keep this file browser-safe for Vite: do not use process.env here.
  */
 
 export const DEFAULT_CONFIG = {
@@ -28,7 +29,8 @@ export const DEFAULT_CONFIG = {
 
   // API Configuration
   api: {
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001',
+    // Browser-safe default. Vite dev proxy handles /api locally.
+    baseURL: '',
     timeout: 30000,
     retryAttempts: 3,
     retryDelay: 1000,
