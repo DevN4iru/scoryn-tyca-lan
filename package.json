@@ -6,6 +6,7 @@
   "scripts": {
     "api": "node api/server.js",
     "dev": "vite --host 0.0.0.0 --port 5173",
+    "local": "bash scripts/run-local.sh",
     "build": "vite build",
     "start": "NODE_ENV=production node api/server.js"
   },
