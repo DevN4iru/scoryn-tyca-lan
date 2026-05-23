@@ -1,0 +1,44 @@
+{
+  "branding": {
+    "appName": "Custom Brand",
+    "appLogo": "/custom-logo.png",
+    "favicon": "/custom-favicon.ico",
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#8b5cf6",
+    "accentColor": "#ec4899",
+    "fontFamily": "Georgia, serif",
+    "borderRadius": "0.75rem"
+  },
+  "features": {
+    "authentication": true,
+    "userProfiles": true,
+    "analytics": true,
+    "notifications": true,
+    "darkMode": true,
+    "multiLanguage": true
+  },
+  "api": {
+    "baseURL": "https://api.example.com",
+    "timeout": 45000,
+    "retryAttempts": 5,
+    "retryDelay": 1500
+  },
+  "pagination": {
+    "defaultPageSize": 20,
+    "maxPageSize": 100
+  },
+  "featureFlags": {
+    "betaFeatures": true,
+    "experimentalUI": false,
+    "maintenanceMode": false
+  },
+  "content": {
+    "pageTitle": "My Custom App",
+    "tagline": "Premium Service Provider",
+    "footerText": "© 2026 My Brand. All rights reserved."
+  },
+  "limits": {
+    "maxUploadSize": 52428800,
+    "maxRequestSize": 5242880
+  }
+}
