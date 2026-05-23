@@ -1,31 +1,70 @@
 /**
  * Configuration Loader - Loads config from multiple sources
- * Priority: Environment > Custom File > Defaults
+ * Priority: Vite Environment > Tenant File > Defaults
  */
 
 import { configManager } from './ConfigManager.js';
 import { DEFAULT_CONFIG } from './defaults.js';
 
 /**
- * Load configuration from environment variables
+ * Load configuration from Vite environment variables.
+ * Vite exposes browser env values through import.meta.env, not process.env.
  * @private
  */
 function loadFromEnv() {
+  const env = import.meta.env || {};
   const envConfig = {};
 
   // Branding from environment
-  if (process.env.REACT_APP_NAME) envConfig.appName = process.env.REACT_APP_NAME;
-  if (process.env.REACT_APP_PRIMARY_COLOR) envConfig.primaryColor = process.env.REACT_APP_PRIMARY_COLOR;
-  if (process.env.REACT_APP_SECONDARY_COLOR) envConfig.secondaryColor = process.env.REACT_APP_SECONDARY_COLOR;
-  if (process.env.REACT_APP_API_URL) envConfig.api = { baseURL: process.env.REACT_APP_API_URL };
+  if (env.VITE_APP_NAME) {
+    envConfig.branding = { ...(envConfig.branding || {}), appName: env.VITE_APP_NAME };
+  }
+  if (env.VITE_APP_PRIMARY_COLOR) {
+    envConfig.branding = { ...(envConfig.branding || {}), primaryColor: env.VITE_APP_PRIMARY_COLOR };
+  }
+  if (env.VITE_APP_SECONDARY_COLOR) {
+    envConfig.branding = { ...(envConfig.branding || {}), secondaryColor: env.VITE_APP_SECONDARY_COLOR };
+  }
+  if (env.VITE_APP_ACCENT_COLOR) {
+    envConfig.branding = { ...(envConfig.branding || {}), accentColor: env.VITE_APP_ACCENT_COLOR };
+  }
+  if (env.VITE_APP_API_URL) {
+    envConfig.api = { ...(envConfig.api || {}), baseURL: env.VITE_APP_API_URL };
+  }
 
-  // Features from environment
-  if (process.env.REACT_APP_FEATURES) {
+  // Backward-compatible support for old REACT_APP_* values when injected manually.
+  // This is intentionally guarded so it cannot crash in the browser.
+  if (typeof process !== 'undefined' && process.env) {
+    const legacy = process.env;
+    if (legacy.REACT_APP_NAME) {
+      envConfig.branding = { ...(envConfig.branding || {}), appName: legacy.REACT_APP_NAME };
+    }
+    if (legacy.REACT_APP_PRIMARY_COLOR) {
+      envConfig.branding = { ...(envConfig.branding || {}), primaryColor: legacy.REACT_APP_PRIMARY_COLOR };
+    }
+    if (legacy.REACT_APP_SECONDARY_COLOR) {
+      envConfig.branding = { ...(envConfig.branding || {}), secondaryColor: legacy.REACT_APP_SECONDARY_COLOR };
+    }
+    if (legacy.REACT_APP_ACCENT_COLOR) {
+      envConfig.branding = { ...(envConfig.branding || {}), accentColor: legacy.REACT_APP_ACCENT_COLOR };
+    }
+    if (legacy.REACT_APP_API_URL) {
+      envConfig.api = { ...(envConfig.api || {}), baseURL: legacy.REACT_APP_API_URL };
+    }
+    if (legacy.REACT_APP_FEATURES) {
+      try {
+        envConfig.features = JSON.parse(legacy.REACT_APP_FEATURES);
+      } catch {
+        console.warn('Failed to parse REACT_APP_FEATURES');
+      }
+    }
+  }
+
+  if (env.VITE_APP_FEATURES) {
     try {
-      const features = JSON.parse(process.env.REACT_APP_FEATURES);
-      envConfig.features = features;
-    } catch (e) {
-      console.warn('Failed to parse REACT_APP_FEATURES');
+      envConfig.features = JSON.parse(env.VITE_APP_FEATURES);
+    } catch {
+      console.warn('Failed to parse VITE_APP_FEATURES');
     }
   }
 
@@ -56,10 +95,8 @@ async function loadFromTenantFile(tenantId) {
  */
 export async function initializeConfig(tenantId = null, customConfig = {}) {
   try {
-    // Start with defaults
     let finalConfig = structuredClone(DEFAULT_CONFIG);
 
-    // Override with tenant-specific config if available
     if (tenantId) {
       const tenantConfig = await loadFromTenantFile(tenantId);
       if (tenantConfig) {
@@ -67,18 +104,15 @@ export async function initializeConfig(tenantId = null, customConfig = {}) {
       }
     }
 
-    // Override with environment variables
     const envConfig = loadFromEnv();
     if (envConfig) {
       finalConfig = deepMerge(finalConfig, envConfig);
     }
 
-    // Override with runtime custom config
     if (customConfig && Object.keys(customConfig).length > 0) {
       finalConfig = deepMerge(finalConfig, customConfig);
     }
 
-    // Load into manager and validate
     configManager.loadConfig(finalConfig);
 
     console.log('Configuration loaded successfully', {
@@ -103,7 +137,7 @@ function deepMerge(target, source) {
   const output = structuredClone(target);
 
   for (const key in source) {
-    if (source.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
       if (
         source[key] &&
         typeof source[key] === 'object' &&
