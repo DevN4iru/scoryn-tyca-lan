@@ -17,6 +17,44 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
+kill_port_listeners() {
+  local port="$1"
+  local pids=""
+
+  if command -v fuser >/dev/null 2>&1; then
+    pids="$(fuser "${port}/tcp" 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+$' | sort -u || true)"
+  fi
+
+  if [ -z "$pids" ] && command -v ss >/dev/null 2>&1; then
+    pids="$(ss -ltnp 2>/dev/null \
+      | awk -v port=":$port" '$4 ~ port"$" {print $0}' \
+      | grep -oE 'pid=[0-9]+' \
+      | cut -d= -f2 \
+      | sort -u || true)"
+  fi
+
+  if [ -z "$pids" ]; then
+    echo "Port $port is free."
+    return 0
+  fi
+
+  echo "Port $port is busy. Stopping old local listener(s): $pids"
+  for pid in $pids; do
+    if [ "$pid" != "$$" ] && kill -0 "$pid" 2>/dev/null; then
+      kill "$pid" 2>/dev/null || true
+    fi
+  done
+
+  sleep 1
+
+  for pid in $pids; do
+    if [ "$pid" != "$$" ] && kill -0 "$pid" 2>/dev/null; then
+      echo "PID $pid did not stop cleanly; force killing it."
+      kill -9 "$pid" 2>/dev/null || true
+    fi
+  done
+}
+
 echo "===== SCORYN TYCA LAN LOCAL RUNNER ====="
 date
 echo "Project: $ROOT"
@@ -58,8 +96,15 @@ else
 fi
 
 echo
+echo "===== PORT CLEANUP ====="
 if command -v ss >/dev/null; then
-  echo "===== PORT CHECK ====="
+  ss -ltnp 2>/dev/null | grep -E ':(3001|5173)\b' || true
+fi
+kill_port_listeners 3001
+kill_port_listeners 5173
+
+if command -v ss >/dev/null; then
+  echo "After cleanup:"
   ss -ltnp 2>/dev/null | grep -E ':(3001|5173)\b' || echo "Ports 3001 and 5173 look free."
 fi
 
